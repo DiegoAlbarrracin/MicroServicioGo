@@ -41,15 +41,26 @@ var users = allUsers {
 	},*/
 }
 
+//Defino la estructura de la respuesta en JSON
+type Token struct {
+    Token string `json:"token"`
+}
 
+//var tokenGo = "tokenDeGoEnNodejs";
 //routes
 func indexRoute(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Welcome to my API");
 }
 
-func getToken(w http.ResponseWriter, r *http.Request) {
+func getTokenGo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json"); //tipo de dato
-    json.NewEncoder(w).Encode(users)
+
+	tokenGo := Token {
+		Token : "tokenDeGoEnNodejs",
+	}
+
+    json.NewEncoder(w).Encode(tokenGo)
+	
 }
 
 
@@ -82,6 +93,10 @@ func msGo(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated) //si fue correcto
 	json.NewEncoder(w).Encode(users) //le envio la info agregada
 
+
+	//Vaciamos el array de objetos para que no se stackeen los resultados 
+	//mas alla de lo necesario y empiece a devolver valores repetidos
+	users = nil
 }
 
 
@@ -97,7 +112,7 @@ func main()  {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", indexRoute)
-	router.HandleFunc("/user", getToken)
+	router.HandleFunc("/getTokenGo", getTokenGo)
 	router.HandleFunc("/msGo", msGo).Methods("POST")
 
 
